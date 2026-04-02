@@ -1,174 +1,139 @@
 ﻿using System;
 
-class Nodo
+class NodoArbol
 {
-    public int Valor;
-    public Nodo Izquierdo;
-    public Nodo Derecho;
+    public int dato;
+    public NodoArbol izquierda;
+    public NodoArbol derecha;
 
-    public Nodo(int valor)
+    public NodoArbol(int valor)
     {
-        Valor = valor;
-        Izquierdo = null;
-        Derecho = null;
+        dato = valor;
+        izquierda = null;
+        derecha = null;
     }
 }
 
-class ArbolBST
+class ArbolBusqueda
 {
-    public Nodo Raiz;
+    public NodoArbol raiz;
 
-    public Nodo Insertar(Nodo raiz, int valor)
+    public ArbolBusqueda()
     {
-        if (raiz == null)
-            return new Nodo(valor);
-
-        if (valor < raiz.Valor)
-            raiz.Izquierdo = Insertar(raiz.Izquierdo, valor);
-        else if (valor > raiz.Valor)
-            raiz.Derecho = Insertar(raiz.Derecho, valor);
-
-        return raiz;
+        raiz = null;
     }
 
-    public bool Buscar(Nodo raiz, int valor)
+    public void Agregar(int valor)
     {
-        if (raiz == null) return false;
-        if (raiz.Valor == valor) return true;
-
-        if (valor < raiz.Valor)
-            return Buscar(raiz.Izquierdo, valor);
-        else
-            return Buscar(raiz.Derecho, valor);
+        raiz = InsertarNodo(raiz, valor);
     }
 
-    public void InOrden(Nodo raiz)
+    private NodoArbol InsertarNodo(NodoArbol actual, int valor)
     {
-        if (raiz != null)
+        if (actual == null)
         {
-            InOrden(raiz.Izquierdo);
-            Console.Write(raiz.Valor + " ");
-            InOrden(raiz.Derecho);
+            return new NodoArbol(valor);
+        }
+
+        if (valor < actual.dato)
+        {
+            actual.izquierda = InsertarNodo(actual.izquierda, valor);
+        }
+        else if (valor > actual.dato)
+        {
+            actual.derecha = InsertarNodo(actual.derecha, valor);
+        }
+
+        return actual;
+    }
+
+    public void MostrarInOrden(NodoArbol nodo)
+    {
+        if (nodo != null)
+        {
+            MostrarInOrden(nodo.izquierda);
+            Console.Write(nodo.dato + " ");
+            MostrarInOrden(nodo.derecha);
         }
     }
 
-    public void PreOrden(Nodo raiz)
+    public void MostrarPreOrden(NodoArbol nodo)
     {
-        if (raiz != null)
+        if (nodo != null)
         {
-            Console.Write(raiz.Valor + " ");
-            PreOrden(raiz.Izquierdo);
-            PreOrden(raiz.Derecho);
+            Console.Write(nodo.dato + " ");
+            MostrarPreOrden(nodo.izquierda);
+            MostrarPreOrden(nodo.derecha);
         }
     }
 
-    public void PostOrden(Nodo raiz)
+    public void MostrarPostOrden(NodoArbol nodo)
     {
-        if (raiz != null)
+        if (nodo != null)
         {
-            PostOrden(raiz.Izquierdo);
-            PostOrden(raiz.Derecho);
-            Console.Write(raiz.Valor + " ");
+            MostrarPostOrden(nodo.izquierda);
+            MostrarPostOrden(nodo.derecha);
+            Console.Write(nodo.dato + " ");
         }
-    }
-
-    public int Minimo(Nodo raiz)
-    {
-        while (raiz.Izquierdo != null)
-            raiz = raiz.Izquierdo;
-        return raiz.Valor;
-    }
-
-    public int Maximo(Nodo raiz)
-    {
-        while (raiz.Derecho != null)
-            raiz = raiz.Derecho;
-        return raiz.Valor;
-    }
-
-    public int Altura(Nodo raiz)
-    {
-        if (raiz == null) return -1;
-
-        int izq = Altura(raiz.Izquierdo);
-        int der = Altura(raiz.Derecho);
-
-        return Math.Max(izq, der) + 1;
-    }
-
-    public void Limpiar()
-    {
-        Raiz = null;
     }
 }
 
-class Program
+class ProgramaPrincipal
 {
     static void Main(string[] args)
     {
-        ArbolBST arbol = new ArbolBST();
-        int opcion, valor;
+        // =============================
+        // PRIMER ÁRBOL
+        // =============================
+        ArbolBusqueda arbol1 = new ArbolBusqueda();
 
-        do
+        int[] valores1 = { 50, 30, 70, 20, 40, 60, 80 };
+
+        Console.WriteLine("===== ÁRBOL 1 =====\n");
+        Console.WriteLine("Insertando datos...\n");
+
+        foreach (int num in valores1)
         {
-            Console.WriteLine("\n--- MENÚ BST ---");
-            Console.WriteLine("1. Insertar");
-            Console.WriteLine("2. Buscar");
-            Console.WriteLine("3. Inorden");
-            Console.WriteLine("4. Preorden");
-            Console.WriteLine("5. Postorden");
-            Console.WriteLine("6. Mínimo");
-            Console.WriteLine("7. Máximo");
-            Console.WriteLine("8. Altura");
-            Console.WriteLine("9. Limpiar árbol");
-            Console.WriteLine("0. Salir");
+            arbol1.Agregar(num);
+        }
 
-            opcion = int.Parse(Console.ReadLine());
+        Console.WriteLine("Recorrido InOrden:");
+        arbol1.MostrarInOrden(arbol1.raiz);
 
-            switch (opcion)
-            {
-                case 1:
-                    Console.Write("Ingrese valor: ");
-                    valor = int.Parse(Console.ReadLine());
-                    arbol.Raiz = arbol.Insertar(arbol.Raiz, valor);
-                    break;
+        Console.WriteLine("\n\nRecorrido PreOrden:");
+        arbol1.MostrarPreOrden(arbol1.raiz);
 
-                case 2:
-                    Console.Write("Buscar valor: ");
-                    valor = int.Parse(Console.ReadLine());
-                    Console.WriteLine(arbol.Buscar(arbol.Raiz, valor) ? "Encontrado" : "No encontrado");
-                    break;
+        Console.WriteLine("\n\nRecorrido PostOrden:");
+        arbol1.MostrarPostOrden(arbol1.raiz);
 
-                case 3:
-                    arbol.InOrden(arbol.Raiz);
-                    break;
+        Console.WriteLine("\n\n---------------------------------\n");
 
-                case 4:
-                    arbol.PreOrden(arbol.Raiz);
-                    break;
 
-                case 5:
-                    arbol.PostOrden(arbol.Raiz);
-                    break;
+        // =============================
+        // SEGUNDO ÁRBOL
+        // =============================
+        ArbolBusqueda arbol2 = new ArbolBusqueda();
 
-                case 6:
-                    Console.WriteLine("Mínimo: " + arbol.Minimo(arbol.Raiz));
-                    break;
+        int[] valores2 = { 15, 10, 20, 8, 12, 17, 25 };
 
-                case 7:
-                    Console.WriteLine("Máximo: " + arbol.Maximo(arbol.Raiz));
-                    break;
+        Console.WriteLine("===== ÁRBOL 2 =====\n");
+        Console.WriteLine("Insertando datos...\n");
 
-                case 8:
-                    Console.WriteLine("Altura: " + arbol.Altura(arbol.Raiz));
-                    break;
+        foreach (int num in valores2)
+        {
+            arbol2.Agregar(num);
+        }
 
-                case 9:
-                    arbol.Limpiar();
-                    Console.WriteLine("Árbol limpiado");
-                    break;
-            }
+        Console.WriteLine("Recorrido InOrden:");
+        arbol2.MostrarInOrden(arbol2.raiz);
 
-        } while (opcion != 0);
+        Console.WriteLine("\n\nRecorrido PreOrden:");
+        arbol2.MostrarPreOrden(arbol2.raiz);
+
+        Console.WriteLine("\n\nRecorrido PostOrden:");
+        arbol2.MostrarPostOrden(arbol2.raiz);
+
+        Console.WriteLine("\n\nEjecución finalizada. Presione una tecla para salir.");
+        Console.ReadKey();
     }
 }
